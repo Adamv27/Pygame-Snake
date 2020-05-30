@@ -93,7 +93,7 @@ class Food:
         self.rect = pygame.Rect(self.x, self.y, 20, 20)
 
     def draw(self, screen):
-        pygame.draw.rect(screen, (255,0,0), (self.x, self.y, self.size, self.size))
+        pygame.draw.rect(screen, (255, 0, 0), (self.x, self.y, self.size, self.size))
 
 
 def draw_grid(screen):
@@ -107,12 +107,12 @@ def display_score(screen, snake):
     score = len(snake.body) - 1
     text = f'Score: {score}'
     font = pygame.font.SysFont(None, 50)
-    display_text = font.render(text, True, (0, 0, 255))
+    display_text = font.render(text, True, (0, 255, 255))
     screen.blit(display_text, (10, 10))
 
 
 def update_screen(screen, snake, food):
-    screen.fill((0, 255, 255))
+    screen.fill((150, 150, 150))
     draw_grid(screen)
     display_score(screen, snake)
     snake.draw(screen)
@@ -120,6 +120,22 @@ def update_screen(screen, snake, food):
     pygame.display.update()
 
 
+def game_over(screen):
+    text = 'Game Over! Press Any key to restart or Q to quit!'
+    font = pygame.font.SysFont(None, 28)
+    display_text = font.render(text, True, (0, 255, 255))
+    screen.blit(display_text, (20, 250))
+    pygame.display.update() 
+
+
+def play_again():
+    while True:
+        for event in pygame.event.get():
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_q:
+                    return False
+                else:
+                    return True
 def main():
     snake = Snake()
     food = Food()
@@ -136,6 +152,7 @@ def main():
         
         if not snake.in_bounds():
             break
+            
         if snake.on_food(food):
             # Create a new food object when old one was eaten
             food = Food()
@@ -143,7 +160,14 @@ def main():
             continue
 
         if snake.on_self():
-            print('collision')
             break
         clock.tick(15)
-main()
+
+while True:
+    main()
+    game_over(screen)
+    time.sleep(1)
+    if not play_again():
+        pygame.quit()
+        break
+
